@@ -11,11 +11,10 @@ const NoticeModal = ({ notice, displayModal, closeModal }) => {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>{notice.title}</Modal.Title>
+        <Modal.Title>{notice?.title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Succes! You sent a message to the author of the notice - {notice.name}{' '}
-        {notice.surname}!
+        Succes! You have sent a message to {notice?.name} {notice?.surname}!
       </Modal.Body>
       <Modal.Footer>
         <Button

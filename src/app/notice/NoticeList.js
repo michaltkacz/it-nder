@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 
-import Header from '../page/Header';
+import Header from '../_global/Header';
 
 import Notice from './Notice';
 
-const NoticeList = ({ noticeList }) => {
+const NoticeList = ({ noticeList, dbCrud }) => {
   return (
     <Container fluid>
       <Row noGutters>
@@ -16,9 +16,11 @@ const NoticeList = ({ noticeList }) => {
       </Row>
       <Row noGutters>
         <Col>
-          {noticeList.map((notice, index) => {
-            return <Notice key={index} notice={notice} />;
-          })}
+          {noticeList?.length === 0
+            ? 'No active notices'
+            : noticeList.map((notice, index) => {
+                return <Notice key={index} notice={notice} dbCrud={dbCrud} />;
+              })}
         </Col>
       </Row>
     </Container>

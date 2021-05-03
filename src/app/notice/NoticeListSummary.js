@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Card, Row, Col, Container } from 'react-bootstrap';
 
-import Header from '../page/Header';
+import Header from '../_global/Header';
 
 const NoticeSummary = ({ noticeList }) => {
   return (

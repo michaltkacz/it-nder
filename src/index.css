@@ -7,3 +7,8 @@
 .content-container {
   background: white;
 }
+
+.jumbotron {
+  background: url('./assets/jumbo.png');
+  background-size: cover;
+}

@@ -2,34 +2,18 @@ import React, { useEffect, useState } from 'react';
 
 import { Row, Col, Container, InputGroup, FormControl } from 'react-bootstrap';
 
-import Header from './../page/Header';
-import TagList from './../tag/TagList';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-const NoticeFilter = ({ filterNoticeList, availableTagList }) => {
-  const [tagFilterList, setTagFilterList] = useState([]);
+import Header from '../_global/Header';
+
+const NoticeFilter = ({ filterNoticeList, availableTagsList }) => {
+  const [tagActiveFilterList, setTagActiveFilterList] = useState([]);
   const [descriptionFilterString, setSescriptionFilterString] = useState('');
 
   useEffect(() => {
-    filterNoticeList(tagFilterList, descriptionFilterString);
-  }, [tagFilterList, descriptionFilterString]);
-
-  const pickTag = (e, tagText) => {
-    e.preventDefault();
-
-    if (tagText === null) return;
-    if (tagFilterList.includes(tagText)) return;
-    setTagFilterList([tagText, ...tagFilterList]);
-  };
-
-  const removeTag = (e, tagToRemoveText) => {
-    e.preventDefault();
-
-    const newTagFilterList = tagFilterList.filter((tag) => {
-      return tag !== tagToRemoveText;
-    });
-
-    setTagFilterList(newTagFilterList);
-  };
+    filterNoticeList(tagActiveFilterList, descriptionFilterString);
+  }, [tagActiveFilterList, descriptionFilterString]);
 
   return (
     <Container fluid>
@@ -40,20 +24,15 @@ const NoticeFilter = ({ filterNoticeList, availableTagList }) => {
       </Row>
       <Row>
         <Col>
-          <TagList
-            tagList={tagFilterList}
-            tagListEmptyText={'Choose tags to filter results'}
-            onTagClick={removeTag}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <TagList
-            tagList={availableTagList}
-            tagListEmptyText={'No tags available'}
-            onTagClick={pickTag}
-            secondary
+          <Typeahead
+            id='tags-typeahead'
+            multiple
+            options={availableTagsList}
+            onChange={(selected) => {
+              setTagActiveFilterList(selected);
+            }}
+            selected={tagActiveFilterList}
+            placeholder='Choose tags...'
           />
         </Col>
       </Row>

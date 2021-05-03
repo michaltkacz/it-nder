@@ -4,7 +4,7 @@ import { InputGroup, FormControl, Button, Row, Col } from 'react-bootstrap';
 
 import TagList from './TagList';
 
-const TagCreator = ({ tagList, setTagList }) => {
+const TagWizard = ({ tagList, setTagList }) => {
   const [tagName, setTagName] = useState('');
 
   const addTag = (e) => {
@@ -72,4 +72,4 @@ const TagCreator = ({ tagList, setTagList }) => {
   );
 };
 
-export default TagCreator;
+export default TagWizard;
