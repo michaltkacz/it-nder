@@ -38,7 +38,7 @@ function App() {
       {{
         navbar: <NavigationBar />,
         pages: [
-          { component: <HomePage />, route: '/it-inder' },
+          { component: <HomePage />, route: '/home' },
           {
             component: <BrowsePage dbCrud={dbCrud} database={database} />,
             route: '/browse',
@@ -47,7 +47,7 @@ function App() {
             component: <NoticeWizardPage dbCrud={dbCrud} />,
             route: '/add',
           },
-          { component: <Redirect to='/it-inder' />, route: '*' },
+          { component: <Redirect to='/home' />, route: '*' },
         ],
       }}
     </AppLayout>

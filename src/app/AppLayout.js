@@ -8,7 +8,7 @@ const AppLayout = ({ children }) => {
   const { navbar, pages } = children;
   return (
     <Container fluid className='p-0 h-100'>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Row noGutters>
           <Col>{navbar}</Col>
         </Row>
