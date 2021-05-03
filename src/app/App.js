@@ -2,6 +2,8 @@ import { React, useEffect, useState } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import { Redirect } from 'react-router';
+
 import AppLayout from './AppLayout';
 import initialData from './initialData';
 
@@ -36,7 +38,7 @@ function App() {
       {{
         navbar: <NavigationBar />,
         pages: [
-          { component: <HomePage />, route: '/' },
+          { component: <HomePage />, route: '/it-inder' },
           {
             component: <BrowsePage dbCrud={dbCrud} database={database} />,
             route: '/browse',
@@ -45,7 +47,7 @@ function App() {
             component: <NoticeWizardPage dbCrud={dbCrud} />,
             route: '/add',
           },
-          { component: <h1>404</h1>, route: '*' },
+          { component: <Redirect to='/it-inder' />, route: '*' },
         ],
       }}
     </AppLayout>
