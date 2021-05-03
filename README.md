@@ -1,10 +1,10 @@
-# IT-NDER v2.0.0
+# IT-NDER v2
 
 > Demo website project for students looking for IT projects teammates.
 
 ## Table of contents
 
-- [IT-NDER v2.0.0](#it-nder-v200)
+- [IT-NDER v2](#it-nder-v2)
   - [Table of contents](#table-of-contents)
   - [General info](#general-info)
   - [Demo](#demo)
