@@ -1,10 +1,22 @@
 import React from 'react';
 
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+
+import { useAuth } from '../../contexts/AuthContext';
 
 const NavigationBar = () => {
+  const { currentUser, logout } = useAuth();
+  const history = useHistory();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      history.push('/');
+    } catch {}
+  };
+
   return (
     <Navbar bg='dark' variant='dark' expand='sm'>
       <Navbar.Brand as={Link} to='/' className='light'>
@@ -12,22 +24,32 @@ const NavigationBar = () => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls='basic-navbar-nav' />
       <Navbar.Collapse id='basic-navbar-nav'>
-        <Nav className='mr-auto'>
-          <NavItem eventkey={1} href='/'>
-            <Nav.Link as={Link} to='/'>
-              home
-            </Nav.Link>
-          </NavItem>
-          <NavItem eventkey={2} href='/browse'>
-            <Nav.Link as={Link} to='/browse'>
-              browse
-            </Nav.Link>
-          </NavItem>
-          <NavItem eventkey={3} href='/add'>
-            <Nav.Link as={Link} to='/add'>
-              add notice
-            </Nav.Link>
-          </NavItem>
+        <Nav className='w-100 justify-content-end'>
+          {currentUser ? (
+            <>
+              <NavItem eventkey={1}>
+                <Nav.Link as={Link} to='/browse'>
+                  browse notices
+                </Nav.Link>
+              </NavItem>
+              <NavItem eventkey={2}>
+                <Nav.Link as={Link} to='/my-notices'>
+                  my notices
+                </Nav.Link>
+              </NavItem>
+              <NavDropdown title={<strong>{currentUser?.email}</strong>}>
+                <NavDropdown.Item onClick={handleLogout}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            </>
+          ) : (
+            <NavItem eventkey={3}>
+              <Nav.Link as={Link} to='/login'>
+                sign in
+              </Nav.Link>
+            </NavItem>
+          )}
         </Nav>
       </Navbar.Collapse>
     </Navbar>

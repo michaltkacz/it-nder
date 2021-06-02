@@ -4,11 +4,54 @@ import { Button, Container, Col, Row } from 'react-bootstrap';
 
 import { Link } from 'react-router-dom';
 
-import HomePageLayout from './HomePageLayout';
+import { useAuth } from '../../contexts/AuthContext';
+
+import HomePageContainer from './HomePageContainer';
 
 const HomePage = () => {
+  const { currentUser } = useAuth();
+
+  const signedInButtons = (
+    <>
+      <Col sm={6} className='my-1'>
+        <Button as={Link} to='/browse' variant='outline-info' className='w-75'>
+          browse notices
+        </Button>
+      </Col>
+      <Col sm={6} className='my-1'>
+        <Button
+          as={Link}
+          to='/my-notices'
+          variant='outline-info'
+          className='w-75'
+        >
+          my notices
+        </Button>
+      </Col>
+    </>
+  );
+
+  const signedOutButtons = (
+    <>
+      <Col sm={6} className='my-1'>
+        <Button
+          as={Link}
+          to='/register'
+          variant='outline-info'
+          className='w-75'
+        >
+          sign up
+        </Button>
+      </Col>
+      <Col sm={6} className='my-1'>
+        <Button as={Link} to='/login' variant='outline-info' className='w-75'>
+          sign in
+        </Button>
+      </Col>
+    </>
+  );
   return (
-    <HomePageLayout>
+    <HomePageContainer>
       <Container fluid className='text-center'>
         <Row className='d-flex justify-content-center mb-3'>
           <h1>
@@ -25,24 +68,10 @@ const HomePage = () => {
           <h5>Enjoy!</h5>
         </Row>
         <Row className=''>
-          <Col sm={6} className='my-1'>
-            <Button
-              as={Link}
-              to='/browse'
-              variant='outline-info'
-              className='w-75'
-            >
-              Browse notices
-            </Button>
-          </Col>
-          <Col sm={6} className='my-1'>
-            <Button as={Link} to='/add' variant='outline-info' className='w-75'>
-              Add notice
-            </Button>
-          </Col>
+          {currentUser ? signedInButtons : signedOutButtons}
         </Row>
       </Container>
-    </HomePageLayout>
+    </HomePageContainer>
   );
 };
 
