@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Modal, Button } from 'react-bootstrap';
 
-const NoticeModal = ({ notice, displayModal, closeModal }) => {
+const NoticeMessageModal = ({ notice, displayModal, closeModal }) => {
   return (
     <Modal
       show={displayModal}
@@ -30,4 +30,4 @@ const NoticeModal = ({ notice, displayModal, closeModal }) => {
   );
 };
 
-export default NoticeModal;
+export default NoticeMessageModal;

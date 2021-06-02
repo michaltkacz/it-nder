@@ -1,56 +1,67 @@
-import { React, useEffect, useState } from 'react';
+import { React } from 'react';
 
-import { v4 as uuidv4 } from 'uuid';
+import {
+  Redirect,
+  Route,
+  BrowserRouter as Router,
+  Switch,
+} from 'react-router-dom';
 
-import { Redirect } from 'react-router';
+import { Col, Container, Row } from 'react-bootstrap';
 
-import AppLayout from './AppLayout';
-import initialData from './initialData';
+import { AuthProvider } from '../contexts/AuthContext';
 
 import NavigationBar from './_global/NavigationBar';
+import PrivateRoute from './_global/PrivateRoute';
 import BrowsePage from './browsePage/BrowsePage';
 import HomePage from './homePage/HomePage.js';
-import NoticeWizardPage from './noticeWizardPage/NoticeWizardPage';
+import LoginPage from './loginPage/LoginPage';
+import MyNoticesPage from './myNoticesPage/MyNoticesPage';
+import RegisterPage from './registerPage/RegisterPage';
 
 function App() {
-  const [database, setDatabase] = useState(initialData);
-
-  const dbCrud = {
-    dbGet: () => database,
-    dbPost: (record) => setDatabase([...database, { id: uuidv4(), ...record }]),
-    dbPut: (record) => {
-      console.log(record);
-      const newDatabase = database.filter((r) => r.id !== record.id);
-      setDatabase([...newDatabase, record]);
-    },
-    dbDelete: (id) => {
-      const newDatabase = database.filter((r) => r.id !== id);
-      setDatabase([...newDatabase]);
-    },
-  };
-
-  useEffect(() => {
-    console.log(database);
-  }, [database]);
-
   return (
-    <AppLayout>
-      {{
-        navbar: <NavigationBar />,
-        pages: [
-          { component: <HomePage />, route: '/home' },
-          {
-            component: <BrowsePage dbCrud={dbCrud} database={database} />,
-            route: '/browse',
-          },
-          {
-            component: <NoticeWizardPage dbCrud={dbCrud} />,
-            route: '/add',
-          },
-          { component: <Redirect to='/home' />, route: '*' },
-        ],
-      }}
-    </AppLayout>
+    <AuthProvider>
+      <Container fluid className='p-0 h-100'>
+        <Router>
+          <Row noGutters>
+            <Col>
+              <NavigationBar />
+            </Col>
+          </Row>
+          <Row
+            noGutters
+            style={{ height: 'calc(100% - 56px)' }} //junky hotfix, however navbar should always have 56 px of height
+          >
+            <Col
+              className='d-flex align-items-center justify-content-center'
+              style={{ backgroundColor: 'lightgray' }}
+            >
+              <Switch>
+                <Route exact path='/'>
+                  <HomePage />
+                </Route>
+                <PrivateRoute exact path='/browse'>
+                  <BrowsePage />
+                </PrivateRoute>
+                <PrivateRoute exact path='/my-notices'>
+                  <MyNoticesPage />,
+                </PrivateRoute>
+                <Route exact path='/login'>
+                  <LoginPage />
+                </Route>
+                <Route exact path='/register'>
+                  <RegisterPage />
+                </Route>
+                <Route exact path='*'>
+                  <Redirect to='/' />
+                </Route>
+              </Switch>
+            </Col>
+          </Row>
+        </Router>
+      </Container>
+    </AuthProvider>
   );
 }
 

@@ -2,14 +2,12 @@ import React from 'react';
 
 import { Card, Row, Col, Container } from 'react-bootstrap';
 
-import Header from '../_global/Header';
-
-const NoticeSummary = ({ noticeList }) => {
+const NoticeListSummary = ({ noticeList }) => {
   return (
     <Container fluid>
       <Row>
         <Col>
-          <Header>Summary</Header>
+          <h4>Summary</h4>
         </Col>
       </Row>
       <Row>
@@ -17,7 +15,7 @@ const NoticeSummary = ({ noticeList }) => {
           <Card className='text-center'>
             <Card.Body>
               <Card.Text>
-                Found {noticeList === null ? 0 : noticeList.length} matching
+                Found {noticeList === null ? 0 : noticeList?.length} matching
                 results!
               </Card.Text>
             </Card.Body>
@@ -28,4 +26,4 @@ const NoticeSummary = ({ noticeList }) => {
   );
 };
 
-export default NoticeSummary;
+export default NoticeListSummary;

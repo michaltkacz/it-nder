@@ -1,25 +1,30 @@
 import React from 'react';
 
-import { Container, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
-
-import Header from '../_global/Header';
+import { Container, Row, Col } from 'react-bootstrap';
 
 import Notice from './Notice';
 
-const NoticeList = ({ noticeList, dbCrud }) => {
+const NoticeList = ({ noticeList, title, isEditable, isPreview }) => {
   return (
     <Container fluid>
       <Row noGutters>
         <Col>
-          <Header>List of active notices</Header>
+          <h4>{title}</h4>
         </Col>
       </Row>
       <Row noGutters>
         <Col>
-          {noticeList?.length === 0
+          {!noticeList || !noticeList?.length
             ? 'No active notices'
             : noticeList.map((notice, index) => {
-                return <Notice key={index} notice={notice} dbCrud={dbCrud} />;
+                return (
+                  <Notice
+                    key={index}
+                    notice={notice}
+                    isEditable={isEditable}
+                    isPreview={isPreview}
+                  />
+                );
               })}
         </Col>
       </Row>

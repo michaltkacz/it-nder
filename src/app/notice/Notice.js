@@ -10,13 +10,14 @@ import {
   DropdownButton,
 } from 'react-bootstrap';
 
+import { database } from '../../firebase';
 import avatarImage from '../../assets/avatar-placeholder.png';
 import TagList from '../_global/tag/TagList';
 
 import NoticeEditModal from './NoticeEditModal';
-import NoticeModal from './NoticeModal';
+import NoticeMessageModal from './NoticeMessageModal';
 
-const Notice = ({ notice, dbCrud, isPreview }) => {
+const Notice = ({ notice, isPreview, isEditable }) => {
   const [displayModal, setDisplayModal] = useState(false);
   const [displayEditModal, setDisplayEditModal] = useState(false);
 
@@ -25,7 +26,7 @@ const Notice = ({ notice, dbCrud, isPreview }) => {
     setDisplayModal(false);
   };
   const showModal = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     setDisplayModal(true);
   };
 
@@ -34,20 +35,26 @@ const Notice = ({ notice, dbCrud, isPreview }) => {
     setDisplayEditModal(false);
   };
   const showEditModal = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     setDisplayEditModal(true);
+  };
+
+  const deleteFromDatabase = () => {
+    const noticesRef = database.ref('notices').child(notice.id);
+    noticesRef.remove();
   };
 
   return (
     <>
-      <NoticeEditModal
-        notice={notice}
-        displayModal={displayEditModal}
-        closeModal={closeEditModal}
-        dbCrud={dbCrud}
-      />
+      {isEditable && (
+        <NoticeEditModal
+          notice={notice}
+          displayModal={displayEditModal}
+          closeModal={closeEditModal}
+        />
+      )}
       {!isPreview && (
-        <NoticeModal
+        <NoticeMessageModal
           notice={notice}
           displayModal={displayModal}
           closeModal={closeModal}
@@ -56,9 +63,9 @@ const Notice = ({ notice, dbCrud, isPreview }) => {
       <Card className='mb-1'>
         <Card.Header>
           <Row noGutters>
-            <Col xs={11}>{notice?.title}</Col>
+            <Col xs={11}>{notice?.title || 'title'}</Col>
             <Col xs={1} className='d-flex justify-content-center'>
-              {!isPreview && (
+              {isEditable && (
                 <DropdownButton variant='outline-secondary' size='sm' title=''>
                   <Dropdown.Item
                     onClick={(e) => {
@@ -67,11 +74,7 @@ const Notice = ({ notice, dbCrud, isPreview }) => {
                   >
                     Edit
                   </Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={() => {
-                      dbCrud.dbDelete(notice.id);
-                    }}
-                  >
+                  <Dropdown.Item onClick={deleteFromDatabase}>
                     Delete
                   </Dropdown.Item>
                 </DropdownButton>
@@ -96,9 +99,10 @@ const Notice = ({ notice, dbCrud, isPreview }) => {
             </Col>
             <Col sm={8}>
               <Card.Text>
-                {notice?.name} {notice?.surname}
+                {notice?.name || 'name'} {notice?.surname || 'surname'} |{' '}
+                {notice?.email || 'email'}
               </Card.Text>
-              <Card.Text>{notice?.description}</Card.Text>
+              <Card.Text>{notice?.description || 'description'}</Card.Text>
             </Col>
           </Row>
         </Card.Body>

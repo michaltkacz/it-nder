@@ -1,103 +1,92 @@
 import React, { useEffect, useState } from 'react';
 
+import { Col, Container, Row } from 'react-bootstrap';
+
+import { database } from '../../firebase';
 import NoticeFilter from '../notice/NoticeFilter';
 import NoticeList from '../notice/NoticeList';
 import NoticeListSummary from '../notice/NoticeListSummary';
 
-import BrowsePageLayout from './BrowsePageLayout';
-
-const BrowsePage = ({ dbCrud, database }) => {
-  const [filteredNoticeList, setFilteredNoticeList] = useState(database);
-  const [availableTagsList, setAvailableTagsList] = useState([]);
-
-  useEffect(() => {
-    setFilteredNoticeList(database);
-  }, [database]);
+const BrowsePage = () => {
+  const [noticeList, setNoticeList] = useState([]);
+  const [noticeFilteredList, setNoticeFilteredList] = useState([]);
+  const [descriptionFilter, setDescriptionFilter] = useState('');
+  const [tagFilter, setTagFilter] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
 
   useEffect(() => {
-    const tags = getAvailableTags(filteredNoticeList);
-    setAvailableTagsList(tags);
-  }, [filteredNoticeList]);
+    getFromDatabase();
+  }, []);
 
-  const filterNoticeList = (tagFilterList, descriptionFilterString) => {
-    const noticeListFilteredByTags = filterNoticeListByTag(tagFilterList);
-    const noticeListFilteredByDescription = filterNoticeListByDescription(
-      descriptionFilterString
-    );
+  useEffect(() => {
+    if (!noticeList) return;
 
-    const filterResultList = new Set(
-      [...noticeListFilteredByTags].filter((notice) =>
-        noticeListFilteredByDescription.has(notice)
-      )
-    );
-
-    setFilteredNoticeList(Array.from(filterResultList));
-  };
-
-  const filterNoticeListByTag = (tagFilterList) => {
-    const allNotices = dbCrud.dbGet();
-
-    if (tagFilterList.length === 0) {
-      return new Set(allNotices);
+    if (!descriptionFilter && tagFilter.length === 0) {
+      setNoticeFilteredList(noticeList);
+      return;
     }
 
-    const newFilteredNoticeList = new Set();
-    allNotices.forEach((notice) => {
-      let filterOut = false;
-      tagFilterList.forEach((tag) => {
-        if (!notice.tags.includes(tag)) {
-          filterOut = true;
-          return;
-        }
-      });
-      if (!filterOut) {
-        newFilteredNoticeList.add(notice);
+    const newNoticeList = noticeList.filter((notice) => {
+      // const foundTag = notice.tags.some((tag) => tagFilter.indexOf(tag) >= 0);
+      const foundAllTags = tagFilter.every(
+        (tag) => notice.tags.indexOf(tag) >= 0
+      );
+
+      const foundDescription = notice.description
+        .toLowerCase()
+        .includes(descriptionFilter);
+      return foundAllTags && foundDescription;
+    });
+    setNoticeFilteredList(newNoticeList);
+  }, [noticeList, descriptionFilter, tagFilter]);
+
+  useEffect(() => {
+    if (!noticeFilteredList) return [];
+    const tags = new Set();
+    noticeFilteredList.forEach((notice) => {
+      notice?.tags.forEach((tag) => tags.add(tag));
+    });
+    setAvailableTags(Array.from(tags));
+  }, [noticeFilteredList]);
+
+  const getFromDatabase = () => {
+    const noticesRef = database.ref('notices');
+    noticesRef.on('value', (snapshot) => {
+      const notices = snapshot.val();
+      const newNoticeList = [];
+      for (let id in notices) {
+        newNoticeList.push({ id, ...notices[id] });
       }
+      setNoticeList(newNoticeList);
+      setNoticeFilteredList(newNoticeList);
     });
-
-    return newFilteredNoticeList;
-  };
-
-  const filterNoticeListByDescription = (descriptionFilterString) => {
-    const allNotices = dbCrud.dbGet();
-
-    if (descriptionFilterString === '') {
-      return new Set(allNotices);
-    }
-
-    const newFilteredNoticeList = new Set();
-    allNotices.forEach((notice) => {
-      if (notice.description.toLowerCase().includes(descriptionFilterString)) {
-        newFilteredNoticeList.add(notice);
-      }
-    });
-
-    return newFilteredNoticeList;
-  };
-
-  const getAvailableTags = (list) => {
-    const tagList = new Set();
-    list.forEach((notice) => {
-      notice.tags.forEach((tag) => {
-        tagList.add(tag);
-      });
-    });
-    return Array.from(tagList);
   };
 
   return (
-    <BrowsePageLayout
-      noticeFilter={
-        <NoticeFilter
-          filterNoticeList={filterNoticeList}
-          availableTagsList={availableTagsList}
-        />
-      }
-      noticeListSummary={<NoticeListSummary noticeList={filteredNoticeList} />}
-      noticeList={
-        <NoticeList noticeList={filteredNoticeList} dbCrud={dbCrud} />
-      }
-    />
+    <Container className='h-100 px-3 py-2' style={{ background: 'white' }}>
+      <Row>
+        <Col lg={8}>
+          <NoticeFilter
+            applyDescriptionFilter={setDescriptionFilter}
+            applyTagFilter={setTagFilter}
+            availableTags={availableTags}
+          />
+        </Col>
+        <Col lg={4}>
+          <NoticeListSummary noticeList={noticeFilteredList} />
+        </Col>
+      </Row>
+      <Row>
+        <Col className='py-3'>
+          <NoticeList
+            title='List of active notices'
+            noticeList={noticeFilteredList}
+            isPreview={false}
+            isEditable={false}
+          />
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

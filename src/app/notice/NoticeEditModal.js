@@ -1,12 +1,15 @@
 import React from 'react';
 
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
+
+import { database } from '../../firebase';
 
 import NoticeWizard from './NoticeWizard';
 
-const NoticeEditModal = ({ notice, displayModal, closeModal, dbCrud }) => {
-  const submitNotice = (notice) => {
-    dbCrud.dbPut(notice);
+const NoticeEditModal = ({ notice, displayModal, closeModal }) => {
+  const updateInDatabase = (notice) => {
+    const noticesRef = database.ref('notices').child(notice.id);
+    noticesRef.update(notice);
     closeModal();
   };
 
@@ -25,7 +28,7 @@ const NoticeEditModal = ({ notice, displayModal, closeModal, dbCrud }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <NoticeWizard submitNotice={submitNotice} noticeToEdit={notice} />
+        <NoticeWizard submitNotice={updateInDatabase} noticeToEdit={notice} />
       </Modal.Body>
     </Modal>
   );

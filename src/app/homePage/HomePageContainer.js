@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Jumbotron, Container, Row, Col } from 'react-bootstrap';
 
-const HomePageLayout = ({ children }) => {
+const HomePageContainer = ({ children }) => {
   return (
     <Jumbotron fluid className='m-0 p-0 w-100 h-100'>
       <Container className='h-100'>
@@ -21,4 +21,4 @@ const HomePageLayout = ({ children }) => {
   );
 };
 
-export default HomePageLayout;
+export default HomePageContainer;

@@ -5,21 +5,24 @@ import { Row, Col, Container, InputGroup, FormControl } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-import Header from '../_global/Header';
-
-const NoticeFilter = ({ filterNoticeList, availableTagsList }) => {
+const NoticeFilter = ({
+  availableTags,
+  applyDescriptionFilter,
+  applyTagFilter,
+}) => {
+  const [descriptionFilterString, setDescriptionFilterString] = useState('');
   const [tagActiveFilterList, setTagActiveFilterList] = useState([]);
-  const [descriptionFilterString, setSescriptionFilterString] = useState('');
 
   useEffect(() => {
-    filterNoticeList(tagActiveFilterList, descriptionFilterString);
+    applyDescriptionFilter(descriptionFilterString);
+    applyTagFilter(tagActiveFilterList);
   }, [tagActiveFilterList, descriptionFilterString]);
 
   return (
     <Container fluid>
       <Row>
         <Col>
-          <Header>Search for notice</Header>
+          <h4>Search for notice</h4>
         </Col>
       </Row>
       <Row>
@@ -27,7 +30,7 @@ const NoticeFilter = ({ filterNoticeList, availableTagsList }) => {
           <Typeahead
             id='tags-typeahead'
             multiple
-            options={availableTagsList}
+            options={availableTags || []}
             onChange={(selected) => {
               setTagActiveFilterList(selected);
             }}
@@ -46,10 +49,10 @@ const NoticeFilter = ({ filterNoticeList, availableTagsList }) => {
             </InputGroup.Prepend>
             <FormControl
               as='textarea'
-              value={descriptionFilterString}
+              value={descriptionFilterString || ''}
               onChange={(e) => {
                 e.preventDefault();
-                setSescriptionFilterString(e.target.value.toLowerCase());
+                setDescriptionFilterString(e.target.value.toLowerCase());
               }}
               aria-label='With textarea'
             />
