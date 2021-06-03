@@ -13,13 +13,13 @@ const NavigationBar = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      history.push('/');
+      history.push('/it-nder');
     } catch {}
   };
 
   return (
     <Navbar bg='dark' variant='dark' expand='sm'>
-      <Navbar.Brand as={Link} to='/' className='light'>
+      <Navbar.Brand as={Link} to='/it-nder' className='light'>
         IT-NDER
       </Navbar.Brand>
       <Navbar.Toggle aria-controls='basic-navbar-nav' />

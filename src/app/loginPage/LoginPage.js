@@ -22,7 +22,7 @@ const LoginPage = () => {
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
       setLoading(false);
-      history.push('/');
+      history.push('/it-nder');
     } catch {
       setError('Failed to sign in');
       setLoading(false);

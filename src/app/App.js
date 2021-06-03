@@ -38,7 +38,7 @@ function App() {
               style={{ backgroundColor: 'lightgray' }}
             >
               <Switch>
-                <Route exact path='/'>
+                <Route exact path='/it-nder'>
                   <HomePage />
                 </Route>
                 <PrivateRoute exact path='/browse'>
@@ -54,7 +54,7 @@ function App() {
                   <RegisterPage />
                 </Route>
                 <Route exact path='*'>
-                  <Redirect to='/' />
+                  <Redirect to='/it-nder' />
                 </Route>
               </Switch>
             </Col>
